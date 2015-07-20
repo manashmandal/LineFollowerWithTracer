@@ -21,6 +21,7 @@
 #include <math.h>
 #include <SoftwareSerial.h>
 
+
 #ifndef LINEFOLLOWER_H
 #define LINEFOLLOWER_H
 
@@ -66,7 +67,7 @@ namespace pdlf{
 			[Constructor]
 			DESCRIPTION:
 			===========
-			Initialize everything 
+			Initializes everything 
 		*/
 
 		Robot(byte *lm, byte *rm, byte *s, byte num_sensor, char mcu);
@@ -195,7 +196,7 @@ namespace pdlf{
 		============
 		Returns number of sensor
 		*/
-		size_t sensorNumber(void);
+		byte sensorNumber(void) const;
 
 		/*
 		DESCRIPTION:
@@ -231,7 +232,7 @@ namespace pdlf{
 		*/
 		void run(int left_speed, int right_speed, dir left_direction, dir right_direction);
 		void run(int left_speed, int right_speed, dir rotation_direction);
-		void run(dir direction);
+		void run(dir direction = Nowhere);
 
 		/*
 		 DESCRIPTION:
@@ -315,6 +316,16 @@ namespace pdlf{
 		*/
 
 		void pdLineFollow(void);
+
+    /*  
+      DESCRIPTION:
+      ===========
+      Added new functions for line tracing capability
+    */
+
+		int positionTracker(void);
+		
+
 	};
 }
 

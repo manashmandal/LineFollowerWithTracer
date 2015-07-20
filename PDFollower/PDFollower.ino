@@ -1,6 +1,7 @@
 #include "LineFollower.h"
 #include <SoftwareSerial.h>
 
+
 using namespace pdlf;
 
 byte s[] = { 54, 55, 56, 57, 58, 59, 60, 61 };
@@ -20,8 +21,7 @@ void setup()
 	robot.printWeight();
 	robot.printDigital();
 	robot.printWeightedValue();
-  /* add setup code here */
-	
+
 }
 
 void loop()

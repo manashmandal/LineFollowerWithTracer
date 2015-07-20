@@ -9,7 +9,7 @@ size_t pdlf::Robot::THRESHOLD = 200;
 
 //Setting global speed
 
-int pdlf::Robot::global_speed = 150;
+int pdlf::Robot::global_speed = 200; //was 150
 
 //Initializing components
 void pdlf::Robot::initializeComponents(void)
@@ -22,6 +22,12 @@ void pdlf::Robot::initializeComponents(void)
 		pinMode(left_motor[i], OUTPUT);
 		pinMode(right_motor[i], OUTPUT);
 	}
+}
+
+//Returns number of sensor
+byte pdlf::Robot::sensorNumber(void) const
+{
+	return Robot::sensor_number;
 }
 
 //Robot constructor
@@ -54,12 +60,13 @@ pdlf::Robot::Robot(byte *lm, byte *rm, byte *s, byte num_sensor, char mcu)
 	error = 0;
 
 
-	kd = 0;
-	kp = 10;
+	kd = 1.0; //was 0
+	kp = 18.0; //was 10
 
   //Initializing bluetooth
   bluetooth = new SoftwareSerial(50, 51);
   bluetooth->begin(9600);
+  bluetooth->println("Begin Transmission");
   Serial.begin(9600);
 }
 
@@ -224,7 +231,7 @@ void pdlf::Robot::printWeightedValue(void)
 	Serial.println("\n------ end weighted value ------");
 }
 
-int pdlf::Robot::weightedValueSum(void)
+int pdlf::Robot::weightedValueSum(void) 
 {
 	updateWeightedValue();
 	int x = 0;
@@ -241,11 +248,15 @@ void pdlf::Robot::pdLineFollow(void)
 	previous_error = error;
 	error = perfect_value - weightedValueSum();
 
+	int first_weighted_position = positionTracker();
+	int second_weighted_position = positionTracker();
+
+	if (first_weighted_position != second_weighted_position) bluetooth->println(second_weighted_position);
 
   //Added new lines to print weighted value to bluetooth
   //works but slow bluetooth->println(sum_of_weighted_value);
 
-  bluetooth->println(weightedValueSum());
+  //bluetooth->println(weightedValueSum());
 
 	double add_value = kp * error + kd * (previous_error - error);
 
@@ -260,7 +271,7 @@ void pdlf::Robot::pdLineFollow(void)
 	}
 
   //Print stops to stop collecting data
-  int count = 1;
+    int count = 1;
 	while (weightedValueSum() == 0){
     count--;
     if (count == 0){
@@ -269,4 +280,19 @@ void pdlf::Robot::pdLineFollow(void)
 		run(Nowhere);
 	}
 
+}
+
+//Returns the numeric value of the position of the sensor array and hence position of the robot
+
+int pdlf::Robot::positionTracker(void)
+{
+	updateDigitalRead();
+	int active_sensors = 0;
+	int weighted_reading = 0;
+	for (int i = 0; i < sensorNumber() ; i++){
+		weighted_reading += s_digital_reading[i] * i * 10;
+		if (s_digital_reading[i] == 1) active_sensors++;
+	}
+	if (weighted_reading) return weighted_reading / active_sensors;
+	else return 0;
 }
