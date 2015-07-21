@@ -3,13 +3,13 @@
 	===========================================
 	Proportional Derivative based Line follower 
 
-	Author: Manash
+	Author:         Manash
 			Khulna University of Engineering & Technology, EEE
 			e-mail: manashmndl[at]gmail[dot]com
 
-	Github Link: http://www.github.com/manashmndl/PDFollower
+	Github Link: http://www.github.com/manashmndl/LineFollowerWithTracer
 
-	Core Contributor: Towsif Taher
+	Core Contributor:                 Towsif Taher
 					  Bangladesh University of Engineering & Technology, EEE
 					  e-mail: taher[dot]towfi2012[at]gmai­l[dot]com
 	LICENSE: MIT
@@ -60,8 +60,9 @@ namespace pdlf{
 		double error, previous_error;
 
 
-    SoftwareSerial *bluetooth;
+    
 	public:
+                      SoftwareSerial *bluetooth;
 
 		/*
 			[Constructor]
