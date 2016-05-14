@@ -259,6 +259,10 @@ void pdlf::Robot::pdLineFollow(void)
   //bluetooth->println(weightedValueSum());
 
 	double add_value = kp * error + kd * (previous_error - error);
+	
+	//Data normalization
+	if (add_value > global_speed) add_value = global_speed;
+	if (add_value < -1 * global_speed) add_value = -1 * global_speed;
 
 	if (add_value == 0.0) run(global_speed, global_speed, Forward, Forward);
 
